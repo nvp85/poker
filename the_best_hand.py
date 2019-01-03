@@ -141,7 +141,7 @@ def the_best_hand(cards):
         result = "Flush"
     elif straight(ranks):
         result = "Straight"
-    elif three_of_a_kind(ranks):
+    elif three_of_a_kind(f):
         result = "Three of a Kind"
     elif two_pairs(f):
         result = "Two Pairs"
@@ -150,5 +150,4 @@ def the_best_hand(cards):
     return result
 
 
-for item in list_of_cards:
-    print(the_best_hand(item))
+
