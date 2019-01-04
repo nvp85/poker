@@ -1,7 +1,8 @@
 import unittest
 import unittest.mock
+from collections import Counter
 from the_best_hand import freqs, suits_ranks, order_by_rank, straight_flush, four_of_a_kind, full_house, \
-    flush, straight, three_of_a_kind, two_pairs, pair, the_best_hand
+    flush, straight, three_of_a_kind, two_pairs, pair, the_best_hand, OrderedRanks
 
 
 class BestHandTestCase(unittest.TestCase):
@@ -17,53 +18,53 @@ class BestHandTestCase(unittest.TestCase):
             ),
         ),
         (
-            ['club', 'diamond', 'heart', 'spade'],
-            ('5JJJJ', ''),
+            {'club', 'diamond', 'heart', 'spade'},
+            OrderedRanks('5JJJJ', ''),
         ),
     )
 
     def test_freqs(self):
-        self.assertEqual(freqs(('10JQK', "A")), [1, 1, 1, 1, 1])
+        self.assertEqual(freqs(OrderedRanks('10JQK', "A")), Counter([1, 1, 1, 1, 1]))
 
     def test_order_by_rank(self):
-        self.assertEqual(order_by_rank('739A4'), ('3479', 'A'))
+        self.assertEqual(order_by_rank('739A4'), OrderedRanks('3479', 'A'))
 
     def test_straight_flush(self):
-        self.assertTrue(straight_flush(['club',], ('10JQK', "A")))
-        self.assertTrue(straight_flush(['club', ], ('2345', "A")))
-        self.assertTrue(straight_flush(['spade', ], ('56789', "")))
-        self.assertFalse(straight_flush(['club', 'diamond'], ('2345', "A")))
-        self.assertFalse(straight_flush(['diamond',], ('34589', "")))
+        self.assertTrue(straight_flush({'club',}, OrderedRanks('10JQK', "A")))
+        self.assertTrue(straight_flush({'club',}, OrderedRanks('2345', "A")))
+        self.assertTrue(straight_flush({'spade',},OrderedRanks('56789', "")))
+        self.assertFalse(straight_flush({'club', 'diamond'}, OrderedRanks('2345', "A")))
+        self.assertFalse(straight_flush({'diamond',}, OrderedRanks('34589', "")))
 
     def test_four_of_a_kind(self):
-        self.assertTrue(four_of_a_kind([1,4]))
-        self.assertFalse(four_of_a_kind([5,]))
-        self.assertFalse(four_of_a_kind([2, 3]))
+        self.assertTrue(four_of_a_kind(Counter([1,4])))
+        self.assertFalse(four_of_a_kind(Counter([5,])))
+        self.assertFalse(four_of_a_kind(Counter([2, 3])))
 
     def test_full_house(self):
-        self.assertTrue(full_house([2, 3]))
-        self.assertTrue(full_house([3, 2]))
-        self.assertFalse(full_house([1, 2, 2]))
-        self.assertFalse(full_house([1, 1, 1, 2]))
+        self.assertTrue(full_house(Counter([2, 3])))
+        self.assertTrue(full_house(Counter([3, 2])))
+        self.assertFalse(full_house(Counter([1, 2, 2])))
+        self.assertFalse(full_house(Counter([1, 1, 1, 2])))
 
     def test_flush(self):
-        self.assertTrue(flush(['diamond',]))
-        self.assertFalse(flush(['club', 'diamond', 'spade']))
+        self.assertTrue(flush({'diamond',}))
+        self.assertFalse(flush({'club', 'diamond', 'spade'}))
 
     def test_straight(self):
-        self.assertTrue(straight(('10JQK', 'A')))
+        self.assertTrue(straight(OrderedRanks('10JQK', 'A')))
 
     def test_three_of_a_kind(self):
-        self.assertTrue(three_of_a_kind([1, 1, 3]))
-        self.assertTrue(three_of_a_kind([3, 1, 1]))
+        self.assertTrue(three_of_a_kind(Counter([1, 1, 3])))
+        self.assertTrue(three_of_a_kind(Counter([3, 1, 1])))
 
     def test_two_pairs(self):
-        self.assertTrue(two_pairs([2, 2, 1]))
-        self.assertFalse(two_pairs([1, 1, 3]))
+        self.assertTrue(two_pairs(Counter([2, 2, 1])))
+        self.assertFalse(two_pairs(Counter([1, 1, 3])))
 
     def test_pair(self):
-        self.assertTrue(pair([1, 1, 1, 2]))
-        self.assertFalse(pair([1, 1, 2]))
+        self.assertTrue(pair(Counter([1, 1, 1, 2])))
+        self.assertFalse(pair(Counter([1, 1, 2])))
 
     @unittest.mock.patch('the_best_hand.pair')
     @unittest.mock.patch('the_best_hand.two_pairs')
