@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    {% if best_hand %}
+        <p>
+            It was {{ best_hand }}.
+        </p>
+    {% endif %}
+    {% if errors %}
+        {{errors}}
+    {% endif %}
+    <form action="" method="post" novalidate>
+        {% for card_form in card_form_list %}
+            {{ card_form.hidden_tag() }}
+            <p>
+            {{ card_form.rank() }}
+            {{ card_form.suit() }}
+            </p>
+        {% endfor %}
+        <input type="submit">
+    </form>
+</div>
+</body>
+</html>
