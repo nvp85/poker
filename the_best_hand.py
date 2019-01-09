@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from flask import Flask, render_template, request
 from forms import CardForm
 
+
 RANK = ('2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K')
 
 
@@ -10,6 +11,26 @@ RANK = ('2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K')
 class OrderedRanks:
     without_aces: str
     aces: str
+
+
+class Hand(list):
+    def validate_error(self):
+        all_suits = {'club', 'diamond', 'spade', 'heart'}
+        all_ranks = {'2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'}
+        use_cards = set()
+        errors = set()
+        if len(self) == 5:
+            for card in self:
+                if card[0] in all_suits and card[1] in all_ranks:
+                    if card in use_cards:
+                        errors.add('Duplicate cards: {0}'.format(card))
+                    else:
+                        use_cards.add((card[0], card[1]))
+                else :
+                    errors.add('Error: some suit or rank is not valid: {0}'.format(card))
+        else:
+            errors.add('The number of card is not five!')
+        return [i for i in errors]
 
 
 def suits_ranks(cards):
@@ -178,7 +199,7 @@ app.config['SECRET_KEY'] = 'you-will-never-guess'
 @app.route('/', methods=['GET', 'POST'])
 def hello():
     card_form_list = []
-    cards = []
+    cards = Hand()
     errors = []
     best_hand = None
     for i in "12345":
@@ -186,12 +207,17 @@ def hello():
         #card_form.suit.id = 'suit' + i
         #card_form.rank.id = 'rank' + i
         card_form_list.append(card_form)
-    for card_form in card_form_list:
-        if card_form.validate_on_submit():
-            cards.append((card_form.data['suit'], card_form.data['rank']))
+    if request.method == 'POST':
+        for card_form in card_form_list:
+            if card_form.validate_on_submit():
+                cards.append((card_form.data['suit'], card_form.data['rank']))
+
+            else:
+                errors.append(card_form.errors)
+        if len(cards.validate_error()) == 0:
             best_hand = the_best_hand(cards)
         else:
-            errors.append(card_form.errors)
+            errors = errors + cards.validate_error()
     return render_template('best_hand.html', card_form_list=card_form_list, best_hand=best_hand, errors=errors)
 
 

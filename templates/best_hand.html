@@ -6,14 +6,14 @@
 </head>
 <body>
 <div>
+    <p>
     {% if best_hand %}
-        <p>
             It was {{ best_hand }}.
-        </p>
     {% endif %}
-    {% if errors %}
-        {{errors}}
-    {% endif %}
+    {% for err in errors %}
+        {{err}}</br>
+    {% endfor%}
+    </p>
     <form action="" method="post" novalidate>
         {% for card_form in card_form_list %}
             {{ card_form.hidden_tag() }}
