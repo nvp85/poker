@@ -32,41 +32,44 @@ class Hand(list):
             errors.add('The number of card is not five!')
         return [i for i in errors]
 
+    @staticmethod
+    def order_by_rank(ranks: str) -> OrderedRanks:
+        ordered_ranks = OrderedRanks(without_aces="", aces="")
+        for r in RANK:
+            ordered_ranks.without_aces = ordered_ranks.without_aces + r*ranks.count(r)
+        ordered_ranks.aces = '' + 'A'*ranks.count('A')
+        return ordered_ranks
 
-def suits_ranks(cards):
-    suits = set()
-    ranks = ''
-    for card in cards:
-        ranks = ranks + card[1]
-        suits.add(card[0])
-    ranks = order_by_rank(ranks)
-    return suits, ranks
+    def ranks(self):
+        ranks = ''
+        for card in self:
+            ranks = ranks + card[1]
+        ranks = self.order_by_rank(ranks)
+        return ranks
 
+    def suits(self):
+        suits = set()
+        for card in self:
+            suits.add(card[0])
+        return suits
 
-def order_by_rank(ranks: str) -> OrderedRanks:
-    ordered_ranks = OrderedRanks(without_aces="", aces="")
-    for r in RANK:
-        ordered_ranks.without_aces = ordered_ranks.without_aces + r*ranks.count(r)
-    ordered_ranks.aces = '' + 'A'*ranks.count('A')
-    return ordered_ranks
+    def freqs(self):
+        """
+        ranks is an object of OrderedRanks class
 
-
-def freqs(ranks):
-    """
-    ranks is an object of OrderedRanks class
-
-        >>> freqs(OrderedRanks(
-        ...     without_aces="2334",
-        ...     aces="A",
-        ... ))
-        Counter({1: 3, 2: 1})
-    """
-    ranks = ranks.without_aces + ranks.aces
-    f = []
-    for r in RANK + ("A",):
-        if ranks.count(r) > 0:
-            f.append(ranks.count(r))
-    return Counter(f)
+            >>> freqs(OrderedRanks(
+            ...     without_aces="2334",
+            ...     aces="A",
+            ... ))
+            Counter({1: 3, 2: 1})
+        """
+        ranks = self.ranks()
+        ranks = ranks.without_aces + ranks.aces
+        f = []
+        for r in RANK + ("A",):
+            if ranks.count(r) > 0:
+                f.append(ranks.count(r))
+        return Counter(f)
 
 
 def flush(suits):
@@ -169,9 +172,9 @@ def pair(f):
 
 
 def the_best_hand(cards):
-    print(cards)
-    suits, ranks = suits_ranks(cards)
-    f = freqs(ranks)
+    suits = cards.suits()
+    ranks = cards.ranks()
+    f = cards.freqs()
     result = "High Card"
     if straight_flush(suits, ranks):
         result = "Straight Flush"

@@ -1,33 +1,51 @@
 import unittest
 import unittest.mock
 from collections import Counter
-from the_best_hand import freqs, suits_ranks, order_by_rank, straight_flush, four_of_a_kind, full_house, \
+from the_best_hand import Hand, straight_flush, four_of_a_kind, full_house, \
     flush, straight, three_of_a_kind, two_pairs, pair, the_best_hand, OrderedRanks
 
 
 class BestHandTestCase(unittest.TestCase):
 
-    def test_suits_ranks(self):
-        self.assertEqual(suits_ranks(
+    def test_ranks(self):
+        h = Hand(
             (
                 ('club', 'J'),
-                ('diamond','J'),
+                ('diamond', 'J'),
                 ('heart', 'J'),
                 ('spade', 'J'),
                 ('club', '5'),
             ),
-        ),
-        (
-            {'club', 'diamond', 'heart', 'spade'},
-            OrderedRanks('5JJJJ', ''),
-        ),
-    )
+        )
+        self.assertEqual(h.ranks(), OrderedRanks('5JJJJ', ''))
+
+    def test_suits(self):
+        h = Hand(
+            (
+                ('club', 'J'),
+                ('diamond', 'J'),
+                ('heart', 'J'),
+                ('spade', 'J'),
+                ('club', '5'),
+            ),
+        )
+        self.assertEqual(h.suits(), {'club', 'diamond', 'heart', 'spade'})
 
     def test_freqs(self):
-        self.assertEqual(freqs(OrderedRanks('10JQK', "A")), Counter([1, 1, 1, 1, 1]))
+        h = Hand(
+            (
+                ('club', 'J'),
+                ('diamond', 'J'),
+                ('heart', 'J'),
+                ('spade', 'J'),
+                ('club', '5'),
+            ),
+        )
+        self.assertEqual(h.freqs(), Counter([4, 1,]))
 
     def test_order_by_rank(self):
-        self.assertEqual(order_by_rank('739A4'), OrderedRanks('3479', 'A'))
+        h = Hand()
+        self.assertEqual(h.order_by_rank('739A4'), OrderedRanks('3479', 'A'))
 
     def test_straight_flush(self):
         self.assertTrue(straight_flush({'club',}, OrderedRanks('10JQK', "A")))
