@@ -106,12 +106,14 @@ class BestHandTestCase(unittest.TestCase):
         mock_straight_flush.return_value = True
         self.assertEqual(
             the_best_hand(
-                (
-                    ('club', 'J'),
-                    ('club','10'),
-                    ('club', '3'),
-                    ('spade', '8'),
-                    ('club', '7')
+                Hand(
+                    (
+                        ('club', 'J'),
+                        ('club','10'),
+                        ('club', '3'),
+                        ('spade', '8'),
+                        ('club', '7')
+                    ),
                 ),
             ),
             "Straight Flush",
@@ -121,12 +123,14 @@ class BestHandTestCase(unittest.TestCase):
         mock_four_of_a_kind.return_value = True
         self.assertEqual(
             the_best_hand(
-                (
-                    ('club', 'J'),
-                    ('club', '10'),
-                    ('club', '3'),
-                    ('spade', '8'),
-                    ('club', '7'),
+                Hand(
+                    (
+                        ('club', 'J'),
+                        ('club', '10'),
+                        ('club', '3'),
+                        ('spade', '8'),
+                        ('club', '7'),
+                    ),
                 ),
             ),
             "Four of a kind",
@@ -136,12 +140,14 @@ class BestHandTestCase(unittest.TestCase):
         mock_full_house.return_value = True
         self.assertEqual(
             the_best_hand(
-                (
-                    ('club', 'J'),
-                    ('club', '10'),
-                    ('club', '3'),
-                    ('spade', '8'),
-                    ('club', '7'),
+                Hand(
+                    (
+                        ('club', 'J'),
+                        ('club', '10'),
+                        ('club', '3'),
+                        ('spade', '8'),
+                        ('club', '7'),
+                    ),
                 ),
             ),
             "Full House",
@@ -151,12 +157,14 @@ class BestHandTestCase(unittest.TestCase):
         mock_flush.return_value = True
         self.assertEqual(
             the_best_hand(
-                (
-                    ('club', 'J'),
-                    ('club', '10'),
-                    ('club', '3'),
-                    ('spade', '8'),
-                    ('club', '7')
+                Hand(
+                    (
+                        ('club', 'J'),
+                        ('club', '10'),
+                        ('club', '3'),
+                        ('spade', '8'),
+                        ('club', '7')
+                    ),
                 ),
             ),
             "Flush",
@@ -166,12 +174,14 @@ class BestHandTestCase(unittest.TestCase):
         mock_straight.return_value = True
         self.assertEqual(
             the_best_hand(
-                (
-                    ('club', 'J'),
-                    ('club', '10'),
-                    ('club', '3'),
-                    ('spade', '8'),
-                    ('club', '7'),
+                Hand(
+                    (
+                        ('club', 'J'),
+                        ('club', '10'),
+                        ('club', '3'),
+                        ('spade', '8'),
+                        ('club', '7'),
+                    ),
                 ),
             ),
             "Straight",
@@ -181,12 +191,14 @@ class BestHandTestCase(unittest.TestCase):
         mock_three_of_a_kind.return_value = True
         self.assertEqual(
             the_best_hand(
-                (
-                    ('club', 'J'),
-                    ('club', '10'),
-                    ('club', '3'),
-                    ('spade', '8'),
-                    ('club', '7'),
+                Hand(
+                    (
+                        ('club', 'J'),
+                        ('club', '10'),
+                        ('club', '3'),
+                        ('spade', '8'),
+                        ('club', '7'),
+                    ),
                 ),
             ),
             "Three of a Kind",
@@ -196,12 +208,14 @@ class BestHandTestCase(unittest.TestCase):
         mock_two_pairs.return_value = True
         self.assertEqual(
             the_best_hand(
-                (
-                    ('club', 'J'),
-                    ('club', '10'),
-                    ('club', '3'),
-                    ('spade', '8'),
-                    ('club', '7'),
+                Hand(
+                    (
+                        ('club', 'J'),
+                        ('club', '10'),
+                        ('club', '3'),
+                        ('spade', '8'),
+                        ('club', '7'),
+                    ),
                 ),
             ),
             "Two Pairs",
@@ -211,12 +225,14 @@ class BestHandTestCase(unittest.TestCase):
         mock_pair.return_value = True
         self.assertEqual(
             the_best_hand(
-                (
-                    ('club', 'J'),
-                    ('club', '10'),
-                    ('club', '3'),
-                    ('spade', '8'),
-                    ('club', '7'),
+                Hand(
+                    (
+                        ('club', 'J'),
+                        ('club', '10'),
+                        ('club', '3'),
+                        ('spade', '8'),
+                        ('club', '7'),
+                    ),
                 ),
             ),
             "Pair",
@@ -225,12 +241,14 @@ class BestHandTestCase(unittest.TestCase):
         mock_pair.return_value = False
         self.assertEqual(
             the_best_hand(
-                (
-                    ('club', 'J'),
-                    ('club', '10'),
-                    ('club', '3'),
-                    ('spade', '8'),
-                    ('club', '7'),
+                Hand(
+                    (
+                        ('club', 'J'),
+                        ('club', '10'),
+                        ('club', '3'),
+                        ('spade', '8'),
+                        ('club', '7'),
+                    ),
                 ),
             ),
             "High Card",
