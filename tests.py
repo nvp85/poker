@@ -1,11 +1,64 @@
 import unittest
 import unittest.mock
 from collections import Counter
+import the_best_hand as main_module
 from the_best_hand import Hand, straight_flush, four_of_a_kind, full_house, \
-    flush, straight, three_of_a_kind, two_pairs, pair, the_best_hand, OrderedRanks
+    flush, straight, three_of_a_kind, two_pairs, pair, the_best_hand, OrderedRanks, app
 
 
 class BestHandTestCase(unittest.TestCase):
+    def setUp(self):
+        self.app = app.test_client()
+        self.app.testing = True
+
+    def test_validate_ok(self):
+        h = Hand(
+            (
+                ('club', 'J'),
+                ('diamond', 'J'),
+                ('heart', 'J'),
+                ('spade', 'J'),
+                ('club', '5'),
+            ),
+        )
+        self.assertEqual(h.validate_error(), [])
+
+    def test_validate_duplicate(self):
+        h = Hand(
+            (
+                ('club', 'J'),
+                ('diamond', 'J'),
+                ('heart', 'J'),
+                ('spade', 'J'),
+                ('club', 'J'),
+            ),
+        )
+        self.assertEqual(h.validate_error(), ["Duplicate cards: ('club', 'J')"])
+
+    def test_validate_not_five(self):
+        h = Hand(
+            (
+                ('club', 'J'),
+                ('diamond', 'J'),
+                ('heart', 'J'),
+                ('spade', 'J'),
+                ('club', '3'),
+                ('club', '1'),
+            ),
+        )
+        self.assertEqual(h.validate_error(), ['The number of card is not five!'])
+
+    def test_validate_err(self):
+        h = Hand(
+            (
+                ('club', 'J'),
+                ('diamond', 'J'),
+                ('heart', 'J'),
+                ('spade', 'J'),
+                ('club', '1'),
+            ),
+        )
+        self.assertEqual(h.validate_error(), ["Error: some suit or rank is not valid: ('club', '1')"])
 
     def test_ranks(self):
         h = Hand(
@@ -253,6 +306,28 @@ class BestHandTestCase(unittest.TestCase):
             ),
             "High Card",
         )
+
+    def test_hello_get(self):
+        result = self.app.get('/')
+        self.assertEqual(result.status_code, 200)
+
+    @unittest.mock.patch.object(main_module.CardForm, 'validate_on_submit', autospec=True)
+    @unittest.mock.patch.object(main_module.Hand, 'validate_error', autospec=True)
+    @unittest.mock.patch('the_best_hand.the_best_hand')
+    def test_hello_post_true(self, mock_best_hand, mock_validate_error, mock_validate_on_submit):
+        mock_validate_on_submit.return_value = True
+        mock_validate_error.return_value = []
+        self.app.post('/', data={})
+        self.assertTrue(mock_best_hand.called)
+
+    @unittest.mock.patch.object(main_module.CardForm, 'validate_on_submit', autospec=True)
+    @unittest.mock.patch.object(main_module.Hand, 'validate_error', autospec=True)
+    @unittest.mock.patch('the_best_hand.the_best_hand')
+    def test_hello_post_false(self, mock_best_hand, mock_validate_error, mock_validate_on_submit):
+        mock_validate_on_submit.return_value = False
+        mock_validate_error.return_value = ['some error']
+        self.app.post('/', data={})
+        self.assertFalse(mock_best_hand.called)
 
 
 if __name__ == '__main__':

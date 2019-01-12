@@ -207,17 +207,14 @@ def hello():
     best_hand = None
     for i in "12345":
         card_form = CardForm(prefix=i)
-        #card_form.suit.id = 'suit' + i
-        #card_form.rank.id = 'rank' + i
         card_form_list.append(card_form)
     if request.method == 'POST':
         for card_form in card_form_list:
             if card_form.validate_on_submit():
                 cards.append((card_form.data['suit'], card_form.data['rank']))
-
             else:
                 errors.append(card_form.errors)
-        if len(cards.validate_error()) == 0:
+        if len(cards.validate_error()) == 0 and not errors:
             best_hand = the_best_hand(cards)
         else:
             errors = errors + cards.validate_error()
