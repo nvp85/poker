@@ -1,5 +1,26 @@
-unittest:
-  image: python:3.7
+image: docker:stable
+services:
+  - docker:dind
+
+stages:
+  - build
+  - test
+
+variables:
+  CONTAINER_TEST_IMAGE: registry.gitlab.com/nvp85/poker:$CI_COMMIT_REF_NAME
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+build:
+  stage: build
   script:
-    - pip install -r requirements.txt
-    - python -m unittest -v
+    - docker build --pull -t $CONTAINER_TEST_IMAGE .
+    - docker push $CONTAINER_TEST_IMAGE
+
+unittest:
+  stage: test
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker run $CONTAINER_TEST_IMAGE pip install -r requirements.txt
+    - docker run $CONTAINER_TEST_IMAGE python -m unittest -v
